@@ -6,11 +6,11 @@ class scpay extends WC_Payment_Gateway
     {
         $this->id = "scPay";
 
-        $this->method_title = __("SCPay", 'scPay');
+        $this->method_title = __("Share Commerce", 'scPay');
 
         $this->method_description = __("Share Commerce Payment Gateway Plug-in for WooCommerce", 'scPay');
 
-        $this->title = __("scPay", 'scPay');
+        $this->title = __("Share Commerce", 'scPay');
 
         $this->hash_type = 'sha256';
 
@@ -47,7 +47,7 @@ class scpay extends WC_Payment_Gateway
                 'default' => 'no',
             ),
             'title' => array(
-                'title' => __('Title', 'scPay'),
+                'title' => __('Title', 'Share Commerce'),
                 'type' => 'text',
                 'desc_tip' => __('Payment title the customer will see during the checkout process.', 'scPay'),
                 'default' => __('SCPay', 'scPay'),
@@ -56,7 +56,7 @@ class scpay extends WC_Payment_Gateway
                 'title' => __('Description', 'scPay'),
                 'type' => 'textarea',
                 'desc_tip' => __('Payment description the customer will see during the checkout process.', 'scPay'),
-                'default' => __('Share Commerce Payment Gateway Solutions & Management', 'scPay'),
+                'default' => __('', 'scPay'),
                 'css' => 'max-width:350px;',
             ),
             'merchantid' => array(
@@ -232,10 +232,13 @@ class scpay extends WC_Payment_Gateway
 
                                 $order->add_order_note('Payment successfully made through SCPay with Transaction Reference ' . $var['TxnRefNo']);
                             }
+
+                            if ($is_callback) {
+                                echo 'OK';
+                            }
+
+                            exit();
                         }
-
-                        die('OK');
-
                     } else {
                         if (strtolower($order->get_status()) == 'pending') {
                             if (!$is_callback) {
@@ -243,8 +246,6 @@ class scpay extends WC_Payment_Gateway
                                 add_filter('the_content', 'scpay_payment_declined_msg');
                             }
                         }
-                        
-                        die('OK');
                     }
                 } else {
                     add_filter('the_content', 'scpay_hash_error_msg');
@@ -299,14 +300,15 @@ class scpay extends WC_Payment_Gateway
                             wp_redirect($order->get_checkout_order_received_url());
                             exit();
                         }
-
-                        wp_redirect($order->get_checkout_order_received_url());
-                        exit();
                     } else {
+
                         if (strtolower($order->get_status()) == 'pending') {
+                            
+                            $order->update_status('failed');
                             $order->add_order_note('Payment was unsuccessful');
                             add_filter('the_content', 'scpay_payment_declined_msg');
                         }
+                        $woocommerce->cart->empty_cart();
 
                         wp_redirect($woocommerce->cart->get_checkout_url());
                         exit();
