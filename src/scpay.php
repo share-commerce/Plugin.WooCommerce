@@ -241,10 +241,8 @@ class scpay extends WC_Payment_Gateway
                         }
                     } else {
                         if (strtolower($order->get_status()) == 'pending') {
-                            if (!$is_callback) {
-                                $order->add_order_note('Payment was unsuccessful');
-                                add_filter('the_content', 'scpay_payment_declined_msg');
-                            }
+                            $order->add_order_note('Payment was unsuccessful');
+                            add_filter('the_content', 'scpay_payment_declined_msg');
                         }
                     }
                 } else {
@@ -304,7 +302,7 @@ class scpay extends WC_Payment_Gateway
 
                         if (strtolower($order->get_status()) == 'pending') {
                             
-                            $order->update_status('failed');
+                            // $order->update_status('failed');
                             $order->add_order_note('Payment was unsuccessful');
                             add_filter('the_content', 'scpay_payment_declined_msg');
                         }
