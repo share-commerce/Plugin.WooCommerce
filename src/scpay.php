@@ -136,9 +136,9 @@ class scpay extends WC_Payment_Gateway
             'MerchantID' => $this->merchantid,
             'CurrencyCode' => 'MYR',
             'TxnAmount' => $amount,
-            'MerchantOrderNo' => $order_id,
+            'MerchantOrderNo' => $order_id . '_' . time(),
             'MerchantOrderDesc' => "Payment for Order No. : " . $order_id,
-            'MerchantRef1' => '',
+            'MerchantRef1' => $order_id,
             'MerchantRef2' => '',
             'MerchantRef3' => '',
             'CustReference' => '',
@@ -150,7 +150,7 @@ class scpay extends WC_Payment_Gateway
             'CustCountryCode' => $billingcountry,
             'CustAddressState' => $billingstate,
             'CustAddressCity' => $billingcity,
-            'RedirectUrl' => ($this->redirecturl !=null) ? $this->redirecturl : '',
+            'RedirectUrl' => $this->redirecturl,
         );
 
         # make sign
@@ -199,10 +199,10 @@ class scpay extends WC_Payment_Gateway
         $logger = wc_get_logger();
         $logger->info( wc_print_r( $var, true ), array( 'source' => 'scpay_callback' ));
 
-        if (isset($var['RespCode']) && isset($var['RespDesc']) && isset($var['MerchantOrderNo']) && isset($var['TxnRefNo']) && isset($var['SCSign'])) {
+        if (isset($var['RespCode']) && isset($var['RespDesc']) && isset($var['MerchantOrderNo']) && isset($var['MerchantRef1']) && isset($var['TxnRefNo']) && isset($var['SCSign'])) {
             global $woocommerce;
 
-            $order = wc_get_order($var['MerchantOrderNo']);
+            $order = wc_get_order($var['MerchantRef1']);
 
             $old_wc = version_compare(WC_VERSION, '3.0', '<');
 
@@ -263,10 +263,10 @@ class scpay extends WC_Payment_Gateway
         $logger = wc_get_logger();
         $logger->info( wc_print_r( $var, true ), array( 'source' => 'scpay_redirect' ));
 
-        if (isset($var['RespCode']) && isset($var['RespDesc']) && isset($var['MerchantOrderNo']) && isset($var['TxnRefNo']) && isset($var['SCSign'])) {
+        if (isset($var['RespCode']) && isset($var['RespDesc']) && isset($var['MerchantOrderNo']) && isset($var['MerchantRef1']) && isset($var['TxnRefNo']) && isset($var['SCSign'])) {
             global $woocommerce;
 
-            $order = wc_get_order($var['MerchantOrderNo']);
+            $order = wc_get_order($var['MerchantRef1']);
 
             $old_wc = version_compare(WC_VERSION, '3.0', '<');
 
@@ -308,7 +308,7 @@ class scpay extends WC_Payment_Gateway
                             $order->add_order_note('Payment was unsuccessful');
                             add_filter('the_content', 'scpay_payment_declined_msg');
                         }
-                        $woocommerce->cart->empty_cart();
+                        // $woocommerce->cart->empty_cart();
 
                         wp_redirect($woocommerce->cart->get_checkout_url());
                         exit();
