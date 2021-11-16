@@ -150,7 +150,7 @@ class scpay extends WC_Payment_Gateway
             'CustCountryCode' => $billingcountry,
             'CustAddressState' => $billingstate,
             'CustAddressCity' => $billingcity,
-            'RedirectUrl' => '',
+            'RedirectUrl' => ($this->redirecturl !=null) ? $this->redirecturl ? '',
         );
 
         # make sign
