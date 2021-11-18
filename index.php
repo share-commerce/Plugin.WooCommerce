@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: ScPay
+ * Plugin Name: Share Commerce Payment
  * Plugin URI: https://share-commerce.com
  * Description: Share Commerce Payment 
  * Version: 1.0.0
