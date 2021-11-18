@@ -50,7 +50,7 @@ class scpay extends WC_Payment_Gateway
                 'title' => __('Title', 'Share Commerce'),
                 'type' => 'text',
                 'desc_tip' => __('Payment title the customer will see during the checkout process.', 'scPay'),
-                'default' => __('SCPay', 'scPay'),
+                'default' => __('Share Commerce Payment', 'scPay'),
             ),
             'description' => array(
                 'title' => __('Description', 'scPay'),
