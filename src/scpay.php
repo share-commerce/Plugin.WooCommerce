@@ -194,7 +194,7 @@ class scpay extends WC_Payment_Gateway
     public function scpay_callback()
     {
         $json = file_get_contents('php://input');
-        $var = json_decode($json);
+        $var = json_decode($json, true);
 
         $logger = wc_get_logger();
         $logger->info( wc_print_r( $var, true ), array( 'source' => 'scpay_callback' ));
