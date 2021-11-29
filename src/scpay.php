@@ -50,7 +50,7 @@ class scpay extends WC_Payment_Gateway
                 'title' => __('Title', 'Share Commerce'),
                 'type' => 'text',
                 'desc_tip' => __('Payment title the customer will see during the checkout process.', 'scPay'),
-                'default' => __('Share Commerce Payment', 'scPay'),
+                'default' => __('SCPay', 'scPay'),
             ),
             'description' => array(
                 'title' => __('Description', 'scPay'),
@@ -132,6 +132,10 @@ class scpay extends WC_Payment_Gateway
             $billingcountry = $customer_order->get_billing_country();
         }
 
+        // echo "<PRE>";
+        // print_r($customer_order);
+        // exit();
+
         $post_args = array(
             'MerchantID' => $this->merchantid,
             'CurrencyCode' => 'MYR',
@@ -166,7 +170,11 @@ class scpay extends WC_Payment_Gateway
         # make query string
         $query_string = '';
         foreach ($post_args as $key => $value) {
-            $query_string .= $key . "=" . $value . '&';
+            if($key == 'CustPhoneNo'){ // do urlencode
+                $query_string .= $key . "=" . urlencode($value) . '&';
+            }else{
+                $query_string .= $key . "=" . $value . '&';
+            }
         }
 
         # Remove Last &
@@ -194,7 +202,7 @@ class scpay extends WC_Payment_Gateway
     public function scpay_callback()
     {
         $json = file_get_contents('php://input');
-        $var = json_decode($json, true);
+        $var = json_decode($json);
 
         $logger = wc_get_logger();
         $logger->info( wc_print_r( $var, true ), array( 'source' => 'scpay_callback' ));
