@@ -201,7 +201,7 @@ class scpay extends WC_Payment_Gateway
         $var = json_decode($json, true);
 
         $logger = wc_get_logger();
-        $logger->info( wc_print_r( $json ), array( 'source' => 'scpay_callback' ));
+        $logger->info( wc_print_r( $var, true ), array( 'source' => 'scpay_callback' ));
 
         if (isset($var['RespCode']) && isset($var['RespDesc']) && isset($var['MerchantOrderNo']) && isset($var['MerchantRef1']) && isset($var['TxnRefNo']) && isset($var['SCSign'])) {
             global $woocommerce;
