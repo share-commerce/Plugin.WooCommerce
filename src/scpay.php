@@ -170,11 +170,7 @@ class scpay extends WC_Payment_Gateway
         # make query string
         $query_string = '';
         foreach ($post_args as $key => $value) {
-            if($key == 'CustPhoneNo'){ // do urlencode
-                $query_string .= $key . "=" . urlencode($value) . '&';
-            }else{
-                $query_string .= $key . "=" . $value . '&';
-            }
+            $query_string .= $key . "=" . urlencode($value) . '&';
         }
 
         # Remove Last &
