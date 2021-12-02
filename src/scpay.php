@@ -208,54 +208,60 @@ class scpay extends WC_Payment_Gateway
 
             $order = wc_get_order($var['MerchantRef1']);
 
-            $old_wc = version_compare(WC_VERSION, '3.0', '<');
+            if($order){
+                $old_wc = version_compare(WC_VERSION, '3.0', '<');
 
-            $order_id = $old_wc ? $order->id : $order->get_id();
+                $order_id = $old_wc ? $order->id : $order->get_id();
 
-            if ($order && $order_id != 0) {
-                # Check Sign
-                $signstr = "";
-                foreach ($var as $key => $value) {
-                    if ($key == 'SCSign') {
-                        continue;
+                if ($order_id != 0) {
+                    # Check Sign
+                    $signstr = "";
+                    foreach ($var as $key => $value) {
+                        if ($key == 'SCSign') {
+                            continue;
+                        }
+
+                        $signstr .= $value;
+                    }
+                    $sign = "";
+                    if ($this->hash_type == 'sha256') {
+                        $sign = hash_hmac('sha256', $signstr, $this->secretkey);
                     }
 
-                    $signstr .= $value;
-                }
-                $sign = "";
-                if ($this->hash_type == 'sha256') {
-                    $sign = hash_hmac('sha256', $signstr, $this->secretkey);
-                }
+                    if ($sign == $var['SCSign']) {
+                        if ($var['RespCode'] == '00' || $var['RespDesc'] == 'Success') {
+                            if (strtolower($order->get_status()) == 'pending' || strtolower($order->get_status()) == 'processing') {
+                                
+                                # only update if order is pending
+                                if (strtolower($order->get_status()) == 'pending') {
+                                    $order->payment_complete();
 
-                if ($sign == $var['SCSign']) {
-                    if ($var['RespCode'] == '00' || $var['RespDesc'] == 'Success') {
-                        if (strtolower($order->get_status()) == 'pending' || strtolower($order->get_status()) == 'processing') {
-                            # only update if order is pending
-                            if (strtolower($order->get_status()) == 'pending') {
-                                $order->payment_complete();
+                                    $order->add_order_note('Payment successfully made through SCPay with Transaction Reference ' . $var['TxnRefNo']);
+                                }
 
-                                $order->add_order_note('Payment successfully made through SCPay with Transaction Reference ' . $var['TxnRefNo']);
-                            }
-
-                            if ($is_callback) {
                                 echo 'OK';
+                                exit();
                             }
-
-                            exit();
+                        } else {
+                            if (strtolower($order->get_status()) == 'pending') {
+                                $order->add_order_note('Payment was unsuccessful');
+                                add_filter('the_content', 'scpay_payment_declined_msg');
+                            }
                         }
                     } else {
-                        if (strtolower($order->get_status()) == 'pending') {
-                            $order->add_order_note('Payment was unsuccessful');
-                            add_filter('the_content', 'scpay_payment_declined_msg');
-                        }
+                        add_filter('the_content', 'scpay_hash_error_msg');
                     }
-                } else {
-                    add_filter('the_content', 'scpay_hash_error_msg');
                 }
             }
+            else{
+                // $logger->info( wc_print_r("order not found"), array( 'source' => 'scpay_callback' ));
+            }
 
+            echo "OK";
             exit();
         }
+        
+        echo "OK";
     }
 
     public function scpay_redirect()
