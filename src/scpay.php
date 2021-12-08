@@ -260,8 +260,6 @@ class scpay extends WC_Payment_Gateway
             echo "OK";
             exit();
         }
-        
-        echo "OK";
     }
 
     public function scpay_redirect()
