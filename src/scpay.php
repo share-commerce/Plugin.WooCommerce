@@ -148,7 +148,7 @@ class scpay extends WC_Payment_Gateway
             'CustReference' => '',
             'CustName' => $name,
             'CustEmail' => $email,
-            'CustPhoneNo' => $phone,
+            'CustPhoneNo' => str_replace("+", "", $phone),
             'CustAddress1' => $billingaddress1,
             'CustAddress2' => $billingaddress2,
             'CustCountryCode' => $billingcountry,
