@@ -16,7 +16,7 @@ class scpay extends WC_Payment_Gateway
 
         $this->environment_mode = 'test';
 
-        $this->icon = 'https://sharecommerce-pg.oss-ap-southeast-3.aliyuncs.com/share-commerce-logo.png';
+        $this->icon = 'https://sharecommerce-pg.oss-ap-southeast-3.aliyuncs.com/logo/share-commerce-logo-v2.png';
 
         $this->has_fields = true;
 
@@ -50,7 +50,7 @@ class scpay extends WC_Payment_Gateway
                 'title' => __('Title', 'Share Commerce'),
                 'type' => 'text',
                 'desc_tip' => __('Payment title the customer will see during the checkout process.', 'scPay'),
-                'default' => __('SCPay', 'scPay'),
+                'default' => __('Share Commerce', 'scPay'),
             ),
             'description' => array(
                 'title' => __('Description', 'scPay'),
@@ -236,7 +236,7 @@ class scpay extends WC_Payment_Gateway
                                 if (strtolower($order->get_status()) == 'pending') {
                                     $order->payment_complete();
 
-                                    $order->add_order_note('Payment successfully made through SCPay with Transaction Reference ' . $var['TxnRefNo']);
+                                    $order->add_order_note('Payment successfully made through Share Commerce with Transaction Reference ' . $var['TxnRefNo']);
                                 }
 
                                 echo 'OK';
@@ -300,7 +300,7 @@ class scpay extends WC_Payment_Gateway
                             if (strtolower($order->get_status()) == 'pending') {
                                 $order->payment_complete();
 
-                                $order->add_order_note('Payment successfully made through SCPay with Transaction Reference ' . $var['TxnRefNo']);
+                                $order->add_order_note('Payment successfully made through Share Commerce with Transaction Reference ' . $var['TxnRefNo']);
                             }
 
                             wp_redirect($order->get_checkout_order_received_url());

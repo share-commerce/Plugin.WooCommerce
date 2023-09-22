@@ -3,7 +3,7 @@
  * Plugin Name: Share Commerce Payment
  * Plugin URI: https://share-commerce.com
  * Description: Share Commerce Payment 
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Share Commerce
  * Author URI: https://share-commerce.com
  * WC requires at least: 4.3
